@@ -12,6 +12,7 @@ import com.booking.bookingsystem.repository.UserRepository;
 import com.booking.bookingsystem.utils.jwt.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse register(RegisterRequest request){
 
@@ -31,11 +33,11 @@ public class UserService {
             throw new EmailAlreadyExistsException(request.email());
         }
 
-        //TODO: Hash password
+        String password = passwordEncoder.encode(request.password());
 
         User user =  User.builder()
                 .email(request.email())
-                .password(request.password())
+                .password(password)
                 .name(request.name())
                 .role(Role.USER)
                 .build();
@@ -62,8 +64,7 @@ public class UserService {
                     return new InvalidCredentialsException();
                 });
 
-        //TODO: Password matching with BCrypt
-        if(!user.getPassword().equals(request.password())){
+        if(!passwordEncoder.matches(request.password(), user.getPassword())){
             log.warn("Login failed: Invalid password for user - {}", request.email());
             throw new InvalidCredentialsException();
         }
