@@ -46,6 +46,10 @@ public class JwtUtils {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractRole(String token){
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -63,10 +67,10 @@ public class JwtUtils {
                 .getPayload();
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token, String email) {
         try {
-            extractAllClaims(token);
-            return !isTokenExpired(token);
+            String tokenEmail = extractEmail(token);
+            return tokenEmail.equals(email) && !isTokenExpired(token);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
