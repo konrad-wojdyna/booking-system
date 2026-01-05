@@ -97,6 +97,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
+    @ExceptionHandler(OfferingNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOfferingNotFoundException(OfferingNotFoundException ex,
+                                                                         HttpServletRequest request){
+        log.warn("Offering not found on path: {} - {}", request.getRequestURI(), ex.getMessage());
+
+        ErrorResponse response = new ErrorResponse(
+          HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ErrorCode.RESOURCE_NOT_FOUND.getCode(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     // ===================== CONFLICT ERRORS (409) =====================
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
