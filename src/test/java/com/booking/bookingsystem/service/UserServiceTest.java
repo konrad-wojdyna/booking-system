@@ -9,7 +9,7 @@ import com.booking.bookingsystem.exceptions.InvalidCredentialsException;
 import com.booking.bookingsystem.model.Role;
 import com.booking.bookingsystem.model.User;
 import com.booking.bookingsystem.repository.UserRepository;
-import com.booking.bookingsystem.utils.jwt.JwtUtils;
+import com.booking.bookingsystem.security.jwt.JwtUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

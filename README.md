@@ -60,13 +60,13 @@ Appointment booking system for hair salons with JWT authentication, role-based a
     - Integration tests (TestContainers) - 6 tests
     - Coverage: >60%
 
-### 🔄 In Progress (Story 2 - Service Management CRUD with JWT Authentication Filter)
+### ✅ Completed (Story 2 - Service Management CRUD with JWT Authentication Filter)
 
 - Service management (CRUD for hair services)
 - JWT Authentication Filter
 - Role-based authorization (@PreAuthorize)
 
-### 📅 Planned (Story 3-7)
+### 🔄 In Progress (Story 3-7)
 
 - Booking system (appointments)
 - Availability checking (time slots)
@@ -192,6 +192,162 @@ http://localhost:8080/api
 
 ---
 
+### Service Management Endpoints
+
+#### 🔹 Get All Services (Public)
+
+**GET** `/services`
+
+**Authorization:** None (public endpoint)
+
+**Success Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Haircut",
+    "description": "Standard haircut",
+    "durationMinutes": 30,
+    "price": 50.00,
+    "active": true,
+    "createdAt": "2026-01-06T10:00:00",
+    "updatedAt": "2026-01-06T10:00:00"
+  }
+]
+```
+
+---
+
+#### 🔹 Get Service by ID (Public)
+
+**GET** `/services/{id}`
+
+**Authorization:** None (public endpoint)
+
+**Success Response:** `200 OK`
+```json
+{
+  "id": 1,
+  "name": "Haircut",
+  "description": "Standard haircut",
+  "durationMinutes": 30,
+  "price": 50.00,
+  "active": true,
+  "createdAt": "2026-01-06T10:00:00",
+  "updatedAt": "2026-01-06T10:00:00"
+}
+```
+
+**Error Responses:**
+- `404 Not Found` - Service not found
+
+---
+
+#### 🔹 Create Service (Admin Only)
+
+**POST** `/services`
+
+**Authorization:** Required (ADMIN role)
+
+**Headers:**
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Request Body:**
+```json
+{
+  "name": "Haircut",
+  "description": "Standard haircut",
+  "durationMinutes": 30,
+  "price": 50.00
+}
+```
+
+**Success Response:** `201 Created`
+```json
+{
+  "id": 1,
+  "name": "Haircut",
+  "description": "Standard haircut",
+  "durationMinutes": 30,
+  "price": 50.00,
+  "active": true,
+  "createdAt": "2026-01-06T10:00:00",
+  "updatedAt": "2026-01-06T10:00:00"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Validation failed
+- `401 Unauthorized` - No token provided
+- `403 Forbidden` - User role (requires ADMIN)
+
+---
+
+#### 🔹 Update Service (Admin Only)
+
+**PUT** `/services/{id}`
+
+**Authorization:** Required (ADMIN role)
+
+**Headers:**
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Request Body:**
+```json
+{
+  "name": "Haircut Premium",
+  "description": "Premium haircut with styling",
+  "durationMinutes": 45,
+  "price": 75.00
+}
+```
+
+**Success Response:** `200 OK`
+```json
+{
+  "id": 1,
+  "name": "Haircut Premium",
+  "description": "Premium haircut with styling",
+  "durationMinutes": 45,
+  "price": 75.00,
+  "active": true,
+  "createdAt": "2026-01-06T10:00:00",
+  "updatedAt": "2026-01-06T11:30:00"
+}
+```
+
+**Error Responses:**
+- `400 Bad Request` - Validation failed
+- `403 Forbidden` - User role (requires ADMIN)
+- `404 Not Found` - Service not found
+
+---
+
+#### 🔹 Delete Service (Admin Only - Soft Delete)
+
+**DELETE** `/services/{id}`
+
+**Authorization:** Required (ADMIN role)
+
+**Headers:**
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Success Response:** `204 No Content`
+
+**Note:** This is a **soft delete** - service is marked as inactive (`active=false`) but remains in database.
+
+**Error Responses:**
+- `403 Forbidden` - User role (requires ADMIN)
+- `404 Not Found` - Service not found
+
+---
+
 ### Error Response Format
 
 All errors follow this structure:
@@ -262,7 +418,10 @@ booking-system/
 │   │   │   ├── model/           # JPA entities
 │   │   │   ├── repository/      # Spring Data repositories
 │   │   │   ├── service/         # Business logic
-│   │   │   └── utils/           # JWT utilities
+│   │   │   └── security/        # JWT Filter, UserDetailsService
+│   │   │      ├── filter/       # JWT Authentication Filter
+│   │   │      ├── jwt/          # JWT utilities
+│   │   │      ├── userdetails/  # Custom UserDetailsService   
 │   │   └── resources/
 │   │       ├── application.yml  # App configuration
 │   │       └── db/migration/    # Flyway migrations
@@ -284,7 +443,7 @@ booking-system/
 ### Phase 1: MVP (Story 1-7)
 
 - [x] **Story 1:** User Authentication ✅
-- [ ] **Story 2:** Service Management
+- [x] **Story 2:** Service Management ✅
 - [ ] **Story 3:** Booking Entity + Relationships
 - [ ] **Story 4:** Booking CRUD + Availability
 - [ ] **Story 5:** Business Rules + Validation 
@@ -330,5 +489,5 @@ This is a learning project for portfolio purposes.
 
 ---
 
-**Last Updated:** January 3, 2026  
-**Version:** v1.0.0
+**Last Updated:** January 6, 2026  
+**Version:** v1.1.0
