@@ -1,5 +1,6 @@
 package com.booking.bookingsystem.dto.request;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,11 +11,11 @@ public record CreateBookingRequest(
         @NotNull(message = "Service ID required")
         Long offeringId,
 
-        @NotNull
-        @FutureOrPresent
+        @NotNull(message = "Booking date is required")
+        @Future(message = "Booking date must be in the future")
         LocalDate bookingDate,
 
-        @NotNull
+        @NotNull(message = "Start time is required")
         LocalTime startTime
 ) {
 }
