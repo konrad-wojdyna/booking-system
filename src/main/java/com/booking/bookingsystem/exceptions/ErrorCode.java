@@ -20,6 +20,9 @@ public enum ErrorCode {
     //Authorization
     FORBIDDEN("ERR_005", "Access forbidden"),
 
+    //Conflict Booking
+    BOOKING_CONFLICT("ERR_006", "Time slot already booked"),
+
     //Generic
     INTERNAL_ERROR("ERR_999", "Internal server error");
 
