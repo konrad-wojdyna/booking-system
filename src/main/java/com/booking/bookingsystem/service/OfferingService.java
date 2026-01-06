@@ -7,6 +7,7 @@ import com.booking.bookingsystem.dto.response.OfferingResponse;
 import com.booking.bookingsystem.exceptions.OfferingNotFoundException;
 import com.booking.bookingsystem.model.Offering;
 import com.booking.bookingsystem.repository.OfferingRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class OfferingService {
 
     private final OfferingRepository offeringRepository;
+    private final EntityManager entityManager;
 
     @Transactional
     public OfferingResponse createService(CreateOfferingRequest request){
@@ -35,6 +37,11 @@ public class OfferingService {
                 .build();
 
         Offering offeringSaved = offeringRepository.save(offering);
+
+        entityManager.flush();
+        entityManager.refresh(offeringSaved);
+
+        log.info("Service created successfully: {} (ID: {})", offeringSaved.getName(), offeringSaved.getId());
 
         return OfferingResponse.fromEntity(offeringSaved);
     }
